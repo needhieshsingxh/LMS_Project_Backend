@@ -1,9 +1,11 @@
+import express from "express";
 import { ApiError, catchAsync } from "../middleware/error.middleware.js";
 import User from "../Models/user.model.js";
 import generateToken from "../utils/generateToken.js"
+import {deleteMediaFromCloud, uploadMedia} from "../utils/cloudinary.js"
 
 
-export const creatUserAccount = catchAsync(async(req, res)=>{
+export const createUserAccount = catchAsync(async(req, res)=>{
     const {email, name, password, role='student'} = req.body;
     const existingUser = await User.findOne({email: email.toLowerCase()})
 
@@ -16,7 +18,7 @@ export const creatUserAccount = catchAsync(async(req, res)=>{
         email: email.toLowerCase(),
         password,
         role
-    }),
+    })
     await user.updateLastActive();
     generateToken(res, user, "Account created Successfully")
 })
@@ -62,4 +64,38 @@ export const getCurrentUserProfile = catchAsync(async (req, res)=>{
 
 
 })
+
+export const updateUserProfile = catchAsync(async (req, res,)=>{
+    const {name, email, bio} = req.body;
+    const updateData = {name, email: email?.toLowerCase(), bio};
+    if(req.file){
+        const avatarResult = await uploadMedia(req.file.path)
+        updateData.avatar = avatarResult.secure_url
+    
+
+        const user = await User.findById(req.id)
+        if(user.avatar && user.avatar !==  'default-avatar.png'){
+            await deleteMediaFromCloud(user.avatar);
+        }
+
+    }
+
+   const updatedUser =  await User.findByIdAndUpdate(
+        req.id,
+        updateData,
+        {new: true, runValidators: true}
+    )
+
+    if(!updatedUser){
+        throw new ApiError("User not found", 404);
+    }
+
+    res.status(200).json({
+        success: true,
+        message: "Profile update successfully",
+        data: updatedUser
+    })
+
+})
+
 export const test = catchAsync(async(req, res)=> {});

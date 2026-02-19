@@ -72,8 +72,10 @@ app.use(express.json({limit: "10kb"}));
 app.use(express.urlencoded({extended: true}))
 
 import healthRoute from "./src/routes/health.route.js"
-app.use("/api/v1/healthCheck", healthRoute)
+import userRoute from "./src/routes/user.route.js"
 
+app.use("/api/v1/healthCheck", healthRoute)
+app.use("/api/v1/user", userRoute)
 
 
 app.listen(PORT, ()=>{
