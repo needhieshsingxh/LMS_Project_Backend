@@ -36,6 +36,11 @@ if(process.env.NODE_ENV === "development"){
 }
 
 
+
+
+
+
+
 //Global Error Handling
 app.use((err, req, res, next)=>{
     console.err(err.stack)
@@ -66,6 +71,8 @@ app.use(cors({
 app.use(express.json({limit: "10kb"}));
 app.use(express.urlencoded({extended: true}))
 
+import healthRoute from "./src/routes/health.route.js"
+app.use("/api/v1/healthCheck", healthRoute)
 
 
 

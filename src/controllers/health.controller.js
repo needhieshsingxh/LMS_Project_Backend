@@ -1,0 +1,46 @@
+import {getDBStatus} from "../database/db.js"
+
+
+export const checkHealth = async(req, res)=>{
+       try{
+         const dbStatus = getDBStatus();
+        const healthStatus = {
+            status: "OK",
+            timeStamp: new Date().toISOString(),
+            serces:{
+                database:{
+                    status: dbStatus.isConnected ? "healthy" : "unhealthy",
+                    details:{
+                        ...dbStatus,
+                        readyState: getReadyStateText(dbStatus.readyState)
+                    }
+                },
+                server:{
+                    staus: 'healthy',
+                    uptime: process.uptime(),
+                    memoryUsage: process.uptime(),
+                    memoryUsage: process.memoryUsage()
+                }
+            }
+        }
+
+        const httpStatus = healthStatus.service.database.status === "healthy" ? 200 : 503
+        res.status(httpStatus).json(healthStatus)
+       }catch(error){
+        console.error("Health check failed", error)
+        res.status(500).josn({
+            status: "ERROR",
+            timeStamp: new Date().toISOString(),
+            error: error.message
+        })
+       }
+}
+
+function getReadyStateText(state){
+    switch(state){
+        case 0: return 'disconnected'
+        case 1: return 'connected'
+        case 2: return 'connecting'
+        case 3: return "disconnected"
+    }
+}
