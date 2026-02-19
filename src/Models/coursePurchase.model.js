@@ -63,6 +63,7 @@ coursePurchaseSchema.index({user:1, course:1});
 coursePurchaseSchema.index({status:1});
 coursePurchaseSchema.index({createdAt:-1});
 
+
 // Virtual field to check if purchase is refundable (within 30 days)
 coursePurchaseSchema.virtual('isRefundable').get(function(){
     if(this.status!=='completed')return false;
@@ -77,5 +78,7 @@ coursePurchaseSchema.methods.processRefund=async function(reason,amount){
     this.refundAmount=amount||this.amount;
     return this.save();
 };
+
+
 
 export const CoursePurchase=mongoose.model('CoursePurchase',coursePurchaseSchema);
