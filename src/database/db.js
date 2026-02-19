@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { DB_NAME } from "../constants/constants";
 
 class DatabaseConnection{
     constructor(){
@@ -43,7 +44,7 @@ class DatabaseConnection{
          mongoose.set("debug", true);
      }
  
-     await mongoose.connect(process.env.MONGO_URI, connectionOptions);
+     await mongoose.connect(process.env.MONGO_URI/DB_NAME, connectionOptions);
      this.retryCount = 0
        } catch (error) {
             console.error(error.message);
