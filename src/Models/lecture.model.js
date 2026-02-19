@@ -24,7 +24,7 @@ publicId:{
     type: String,
     required: [true, 'Public ID is required for video manangement']
 },
-isPrevied:{
+isPreviewed:{
     type: Boolean,
     default: false
 },
@@ -32,11 +32,13 @@ order: {
 type: Number,
 required: [true, 'Lecture order is required']
 }
-}):
+})
 
 lectureSchema.pre('save', function(next){
-
+if(this.duration){
+    this.duration = Math.round(this.duration * 100)/100
+}
 })
 
 
-const Lecture = mongoose.model("Lecture", lectureSchema)
+export const Lecture = mongoose.model("Lecture", lectureSchema)
