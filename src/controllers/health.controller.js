@@ -7,7 +7,7 @@ export const checkHealth = async(req, res)=>{
         const healthStatus = {
             status: "OK",
             timeStamp: new Date().toISOString(),
-            serces:{
+            source:{
                 database:{
                     status: dbStatus.isConnected ? "healthy" : "unhealthy",
                     details:{
