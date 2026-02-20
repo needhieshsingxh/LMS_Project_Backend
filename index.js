@@ -36,11 +36,6 @@ if(process.env.NODE_ENV === "development"){
 }
 
 
-
-
-
-
-
 //Global Error Handling
 app.use((err, req, res, next)=>{
     console.err(err.stack)
